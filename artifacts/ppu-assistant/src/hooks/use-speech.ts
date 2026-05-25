@@ -24,6 +24,8 @@ interface UseSpeechReturn {
   speak: (text: string) => void;
   stopSpeaking: () => void;
   isSupported: boolean;
+  isSynthesisSupported: boolean;
+  isRecognitionSupported: boolean;
 }
 
 export function useSpeech(onTranscript?: (text: string) => void): UseSpeechReturn {
@@ -32,13 +34,17 @@ export function useSpeech(onTranscript?: (text: string) => void): UseSpeechRetur
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const synthRef = useRef<SpeechSynthesis | null>(null);
 
-  const isSupported =
+  const isSynthesisSupported =
+    typeof window !== "undefined" && "speechSynthesis" in window;
+
+  const isRecognitionSupported =
     typeof window !== "undefined" &&
-    ("SpeechRecognition" in window || "webkitSpeechRecognition" in window) &&
-    "speechSynthesis" in window;
+    ("SpeechRecognition" in window || "webkitSpeechRecognition" in window);
+
+  const isSupported = isSynthesisSupported && isRecognitionSupported;
 
   useEffect(() => {
-    if (!isSupported) return;
+    if (!isSynthesisSupported) return;
     synthRef.current = window.speechSynthesis;
     return () => {
       if (recognitionRef.current) recognitionRef.current.abort();
@@ -141,5 +147,5 @@ export function useSpeech(onTranscript?: (text: string) => void): UseSpeechRetur
     setState("idle");
   }, []);
 
-  return { state, transcript, startListening, stopListening, speak, stopSpeaking, isSupported };
+  return { state, transcript, startListening, stopListening, speak, stopSpeaking, isSupported, isSynthesisSupported, isRecognitionSupported };
 }

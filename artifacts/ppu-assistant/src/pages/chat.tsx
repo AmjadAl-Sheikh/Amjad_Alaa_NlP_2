@@ -225,7 +225,7 @@ export default function Chat() {
                       <span className="text-[10px] text-muted-foreground">
                         {new Date(msg.createdAt).toLocaleTimeString("ar-PS", { hour: "2-digit", minute: "2-digit" })}
                       </span>
-                      {!isUser && speech.isSupported && (
+                      {!isUser && speech.isSynthesisSupported && (
                         <button
                           onClick={() => isSpeaking ? speech.stopSpeaking() : speech.speak(msg.content)}
                           className="text-muted-foreground hover:text-primary transition-colors"
@@ -318,7 +318,7 @@ export default function Chat() {
           />
 
           {/* Voice button */}
-          {speech.isSupported && (
+          {speech.isRecognitionSupported && (
             <Button
               type="button"
               size="icon"
