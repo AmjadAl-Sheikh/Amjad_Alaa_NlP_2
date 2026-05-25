@@ -50,11 +50,16 @@ router.post("/auth/request-otp", async (req, res): Promise<void> => {
   // Send email
   try {
     await sendOtpEmail(email, code);
-    req.log.info({ email }, "OTP sent");
+    req.log.info({ email }, "OTP sent via email");
   } catch (err) {
     req.log.error({ err, email }, "Failed to send OTP email");
-    res.status(500).json({ error: "فشل إرسال البريد الإلكتروني، تحقق من عنوان البريد" });
-    return;
+    // In development: log the OTP so the flow can be tested without valid email creds
+    if (process.env.NODE_ENV !== "production") {
+      req.log.warn({ email, otp: code }, "⚠️  DEV MODE — OTP (email failed, using console fallback)");
+    } else {
+      res.status(500).json({ error: "فشل إرسال البريد الإلكتروني، تحقق من عنوان البريد" });
+      return;
+    }
   }
 
   res.json({ message: "تم إرسال رمز التحقق", email });
