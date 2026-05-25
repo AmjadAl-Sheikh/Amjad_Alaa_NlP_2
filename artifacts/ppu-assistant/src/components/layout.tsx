@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
 import { Link, useLocation } from "wouter";
-import { useGetMe, getGetMeQueryKey, useLogout } from "@workspace/api-client-react";
+import { useGetMe, getGetMeQueryKey, useLogout, useHealthCheck } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
-import { LogOut, LayoutDashboard, MessageSquare, BookOpen, Users, Menu } from "lucide-react";
+import { LogOut, LayoutDashboard, MessageSquare, BookOpen, Users, Menu, Activity } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -12,6 +12,8 @@ export function Layout({ children }: { children: ReactNode }) {
   const { data: user } = useGetMe({
     query: { queryKey: getGetMeQueryKey(), retry: false },
   });
+
+  const { data: health } = useHealthCheck();
 
   const logoutMutation = useLogout({
     mutation: {
@@ -87,6 +89,15 @@ export function Layout({ children }: { children: ReactNode }) {
           </nav>
 
           <div className="flex items-center gap-4">
+            {health?.status === "ok" && (
+              <div className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+                متصل بالنظام
+              </div>
+            )}
             {user?.isAuthenticated && (
               <Button 
                 variant="ghost" 

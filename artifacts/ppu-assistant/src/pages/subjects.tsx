@@ -1,20 +1,32 @@
 import { useState } from "react";
-import { useListSubjects, getListSubjectsQueryKey } from "@workspace/api-client-react";
+import { useListSubjects, getListSubjectsQueryKey, useGetSubject, getGetSubjectQueryKey } from "@workspace/api-client-react";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Search, BookOpen } from "lucide-react";
 
 export default function Subjects() {
   const [searchTerm, setSearchTerm] = useState("");
   const [majorFilter, setMajorFilter] = useState<string>("all");
   const [levelFilter, setLevelFilter] = useState<string>("all");
+  const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(null);
 
   const { data: subjects, isLoading } = useListSubjects(
     {},
     {
       query: { queryKey: getListSubjectsQueryKey({}) },
+    }
+  );
+
+  const { data: selectedSubject } = useGetSubject(
+    selectedSubjectId!,
+    {
+      query: { 
+        queryKey: getGetSubjectQueryKey(selectedSubjectId!),
+        enabled: !!selectedSubjectId 
+      },
     }
   );
 
@@ -82,7 +94,11 @@ export default function Subjects() {
       ) : filteredSubjects && filteredSubjects.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredSubjects.map((subject) => (
-            <Card key={subject.id} className="glass-panel border-none hover:shadow-md transition-shadow">
+            <Card 
+              key={subject.id} 
+              className="glass-panel border-none hover:shadow-md transition-all cursor-pointer hover:-translate-y-1"
+              onClick={() => setSelectedSubjectId(subject.id)}
+            >
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
                   <div className="space-y-1">
@@ -122,6 +138,44 @@ export default function Subjects() {
           <p className="text-muted-foreground">جرب تغيير كلمات البحث أو الفلاتر</p>
         </div>
       )}
+
+      <Dialog open={!!selectedSubjectId} onOpenChange={(open) => !open && setSelectedSubjectId(null)}>
+        <DialogContent className="sm:max-w-[425px]" dir="rtl">
+          <DialogHeader>
+            <DialogTitle>{selectedSubject?.name || "جاري التحميل..."}</DialogTitle>
+            <DialogDescription className="font-mono text-left" dir="ltr">
+              {selectedSubject?.code}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedSubject ? (
+            <div className="space-y-4 py-4">
+              <div className="flex gap-2 flex-wrap">
+                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-sm font-semibold bg-secondary text-secondary-foreground">
+                  المستوى: {selectedSubject.level}
+                </span>
+                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-sm font-semibold bg-muted text-muted-foreground">
+                  الساعات المعتمدة: {selectedSubject.creditHours}
+                </span>
+                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-sm font-semibold bg-accent text-accent-foreground">
+                  تخصص: {selectedSubject.major}
+                </span>
+              </div>
+              
+              <div className="space-y-2">
+                <h4 className="font-semibold text-sm">وصف المساق</h4>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {selectedSubject.description || "لا يوجد وصف متاح لهذا المساق."}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="py-8 flex justify-center">
+              <Skeleton className="h-32 w-full" />
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
