@@ -209,7 +209,14 @@ router.post("/chat/messages", requireAuth, async (req, res): Promise<void> => {
     }
   } catch (err) {
     logger.error({ err }, "Gemini API error");
-    aiContent = "عذراً، حدث خطأ في الاتصال بالذكاء الاصطناعي. يرجى المحاولة لاحقاً.";
+    const errMsg = (err as { message?: string })?.message ?? "";
+    if (errMsg.includes("429") || errMsg.includes("quota") || errMsg.includes("Too Many Requests")) {
+      aiContent = "⚠️ عذراً، تم تجاوز الحد اليومي لطلبات الذكاء الاصطناعي. يرجى المحاولة لاحقاً أو التواصل مع مسؤول النظام.";
+    } else if (errMsg.includes("API_KEY") || errMsg.includes("401") || errMsg.includes("403")) {
+      aiContent = "⚠️ مفتاح الذكاء الاصطناعي غير صالح. يرجى التواصل مع مسؤول النظام.";
+    } else {
+      aiContent = "عذراً، حدث خطأ في الاتصال بالذكاء الاصطناعي. يرجى المحاولة لاحقاً.";
+    }
   }
 
   const [saved] = await db
