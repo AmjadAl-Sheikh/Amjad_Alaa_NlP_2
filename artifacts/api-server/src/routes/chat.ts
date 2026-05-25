@@ -170,7 +170,7 @@ router.post("/chat/messages", requireAuth, async (req, res): Promise<void> => {
 
     if (imageBase64 && mimeType) {
       // Use vision model for images
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
       const imagePart = {
         inlineData: { data: imageBase64, mimeType: mimeType as string },
       };
@@ -178,7 +178,7 @@ router.post("/chat/messages", requireAuth, async (req, res): Promise<void> => {
       const result = await model.generateContent([textPart, imagePart]);
       aiContent = result.response.text();
     } else {
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
       const chat = model.startChat({
         history: [
           { role: "user", parts: [{ text: systemPrompt }] },
