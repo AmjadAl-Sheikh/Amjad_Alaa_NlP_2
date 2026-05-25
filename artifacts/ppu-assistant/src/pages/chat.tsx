@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useSpeech } from "@/hooks/use-speech";
+import { useSpeech, stripMarkdown } from "@/hooks/use-speech";
 import { cn } from "@/lib/utils";
 
 interface PendingImage {
@@ -205,7 +205,7 @@ export default function Chat() {
                         ? "bg-primary text-primary-foreground rounded-tr-sm"
                         : "bg-background border rounded-tl-sm shadow-sm"
                     )}>
-                      {msg.content}
+                      {isUser ? msg.content : stripMarkdown(msg.content)}
                     </div>
                     <div className="flex items-center gap-1 px-1">
                       <span className="text-[10px] text-muted-foreground">
