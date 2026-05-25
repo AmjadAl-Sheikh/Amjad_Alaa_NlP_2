@@ -1,66 +1,38 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { useRequestOtp, useVerifyOtp, getGetMeQueryKey } from "@workspace/api-client-react";
+import { useRequestOtp, getGetMeQueryKey } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { useQueryClient } from "@tanstack/react-query";
 
 export default function Login() {
   const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
-  const [step, setStep] = useState<"email" | "code">("email");
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const requestOtpMutation = useRequestOtp({
-    mutation: {
-      onSuccess: () => {
-        setStep("code");
-        toast({
-          title: "تم إرسال الرمز",
-          description: "يرجى التحقق من بريدك الإلكتروني للحصول على رمز الدخول.",
-        });
-      },
-      onError: (error) => {
-        toast({
-          title: "خطأ",
-          description: error.error || "حدث خطأ أثناء إرسال الرمز.",
-          variant: "destructive",
-        });
-      },
-    },
-  });
-
-  const verifyOtpMutation = useVerifyOtp({
+  const loginMutation = useRequestOtp({
     mutation: {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: getGetMeQueryKey() });
         setLocation("/dashboard");
       },
-      onError: (error) => {
+      onError: () => {
         toast({
           title: "خطأ",
-          description: error.error || "رمز الدخول غير صحيح.",
+          description: "حدث خطأ أثناء تسجيل الدخول. حاول مجدداً.",
           variant: "destructive",
         });
       },
     },
   });
 
-  const handleRequestOtp = (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
-    requestOtpMutation.mutate({ data: { email } });
-  };
-
-  const handleVerifyOtp = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!code || code.length !== 6) return;
-    verifyOtpMutation.mutate({ data: { email, code } });
+    loginMutation.mutate({ data: { email } });
   };
 
   return (
@@ -70,7 +42,7 @@ export default function Login() {
 
       <div className="w-full max-w-md z-10">
         <div className="text-center mb-8">
-          <div className="w-12 h-12 bg-primary text-primary-foreground rounded-lg flex items-center justify-center font-bold text-2xl mx-auto mb-4">
+          <div className="w-16 h-16 bg-primary text-primary-foreground rounded-xl flex items-center justify-center font-bold text-xl mx-auto mb-4 shadow-lg">
             PPU
           </div>
           <h1 className="text-2xl font-bold tracking-tight mb-2">تسجيل الدخول</h1>
@@ -80,74 +52,34 @@ export default function Login() {
         </div>
 
         <div className="glass-panel p-6 sm:p-8 rounded-2xl">
-          {step === "email" ? (
-            <form onSubmit={handleRequestOtp} className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="email">البريد الإلكتروني الجامعي</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="student@ppu.edu.ps"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="text-left bg-background/50"
-                  dir="ltr"
-                  required
-                />
-              </div>
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={requestOtpMutation.isPending || !email}
-              >
-                {requestOtpMutation.isPending ? "جاري الإرسال..." : "إرسال رمز OTP"}
-              </Button>
-            </form>
-          ) : (
-            <form onSubmit={handleVerifyOtp} className="space-y-6">
-              <div className="space-y-4">
-                <Label>أدخل رمز التحقق (OTP)</Label>
-                <p className="text-sm text-muted-foreground mb-4">
-                  تم إرسال رمز مكون من 6 أرقام إلى {email}
-                </p>
-                <div className="flex justify-center" dir="ltr">
-                  <InputOTP
-                    maxLength={6}
-                    value={code}
-                    onChange={(value) => setCode(value)}
-                    disabled={verifyOtpMutation.isPending}
-                  >
-                    <InputOTPGroup>
-                      <InputOTPSlot index={0} />
-                      <InputOTPSlot index={1} />
-                      <InputOTPSlot index={2} />
-                      <InputOTPSlot index={3} />
-                      <InputOTPSlot index={4} />
-                      <InputOTPSlot index={5} />
-                    </InputOTPGroup>
-                  </InputOTP>
-                </div>
-              </div>
-              <div className="flex flex-col gap-3">
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={verifyOtpMutation.isPending || code.length !== 6}
-                >
-                  {verifyOtpMutation.isPending ? "جاري التحقق..." : "تحقق والدخول"}
-                </Button>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={() => setStep("email")}
-                  disabled={verifyOtpMutation.isPending}
-                >
-                  العودة لتعديل البريد
-                </Button>
-              </div>
-            </form>
-          )}
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="email">البريد الإلكتروني الجامعي</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="student@ppu.edu.ps"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="text-left bg-background/50"
+                dir="ltr"
+                required
+                autoFocus
+              />
+            </div>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={loginMutation.isPending || !email}
+            >
+              {loginMutation.isPending ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
+            </Button>
+          </form>
         </div>
+
+        <p className="text-center text-xs text-muted-foreground mt-6">
+          جامعة بوليتكنك فلسطين — المساعد الذكي الأكاديمي
+        </p>
       </div>
     </div>
   );
