@@ -15,6 +15,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSpeech, stripMarkdown } from "@/hooks/use-speech";
+import { MessageContent } from "@/components/message-content";
 import { cn } from "@/lib/utils";
 
 interface PendingImage {
@@ -213,14 +214,16 @@ export default function Chat() {
                         className="max-w-[200px] rounded-xl border"
                       />
                     )}
-                    <div className={cn(
-                      "px-4 py-2.5 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap",
-                      isUser
-                        ? "bg-primary text-primary-foreground rounded-tr-sm"
-                        : "bg-background border rounded-tl-sm shadow-sm"
-                    )}>
-                      {isUser ? msg.content : stripMarkdown(msg.content)}
-                    </div>
+                    {isUser ? (
+                      <div className="px-4 py-2.5 rounded-2xl rounded-tr-sm text-sm leading-relaxed bg-primary text-primary-foreground whitespace-pre-wrap">
+                        {msg.content}
+                      </div>
+                    ) : (
+                      <MessageContent
+                        content={stripMarkdown(msg.content)}
+                        className="px-4 py-2.5 rounded-2xl rounded-tl-sm text-sm leading-relaxed bg-background border shadow-sm"
+                      />
+                    )}
                     <div className="flex items-center gap-1 px-1">
                       <span className="text-[10px] text-muted-foreground">
                         {new Date(msg.createdAt).toLocaleTimeString("ar-PS", { hour: "2-digit", minute: "2-digit" })}
