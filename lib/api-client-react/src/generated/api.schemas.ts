@@ -23,8 +23,12 @@ export interface OtpRequest {
 }
 
 export interface OtpResponse {
-  message: string;
-  expiresInSeconds: number;
+  token: string;
+  userId: string;
+  email: string;
+  studentName?: string | null;
+  major?: string | null;
+  isAuthenticated: boolean;
 }
 
 export interface OtpVerify {
@@ -54,12 +58,15 @@ export interface ChatMessage {
   id: string;
   role: ChatMessageRole;
   content: string;
+  imageUrl?: string | null;
   createdAt: string;
 }
 
 export interface ChatInput {
   /** @minLength 1 */
   message: string;
+  imageBase64?: string | null;
+  mimeType?: string | null;
 }
 
 export interface Student {

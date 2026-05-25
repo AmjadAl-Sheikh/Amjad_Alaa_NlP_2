@@ -11,5 +11,6 @@ export interface ChatMessage {
   id: string;
   role: ChatMessageRole;
   content: string;
+  imageUrl?: string | null;
   createdAt: Date;
 }

@@ -37,7 +37,9 @@ router.post("/auth/request-otp", async (req, res): Promise<void> => {
   const [student] = await db.select().from(studentsTable).where(eq(studentsTable.email, email));
 
   req.log.info({ email }, "Direct login successful");
+  // Return token in body so frontend can store it for Bearer auth
   res.json({
+    token,
     userId: user.id,
     email: user.email,
     studentName: student?.name ?? null,

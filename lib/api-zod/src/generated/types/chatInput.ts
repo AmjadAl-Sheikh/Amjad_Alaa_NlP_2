@@ -9,4 +9,6 @@
 export interface ChatInput {
   /** @minLength 1 */
   message: string;
+  imageBase64?: string | null;
+  mimeType?: string | null;
 }

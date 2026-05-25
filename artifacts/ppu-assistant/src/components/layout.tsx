@@ -18,6 +18,12 @@ export function Layout({ children }: { children: ReactNode }) {
   const logoutMutation = useLogout({
     mutation: {
       onSuccess: () => {
+        import("@/lib/auth-token").then(({ clearToken }) => clearToken());
+        queryClient.clear();
+        setLocation("/login");
+      },
+      onError: () => {
+        import("@/lib/auth-token").then(({ clearToken }) => clearToken());
         queryClient.clear();
         setLocation("/login");
       },

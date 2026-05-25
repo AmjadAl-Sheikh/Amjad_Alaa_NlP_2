@@ -350,13 +350,25 @@ components:
     OtpResponse:
       type: object
       properties:
-        message:
+        token:
           type: string
-        expiresInSeconds:
-          type: integer
+        userId:
+          type: string
+        email:
+          type: string
+        studentName:
+          type: string
+          nullable: true
+        major:
+          type: string
+          nullable: true
+        isAuthenticated:
+          type: boolean
       required:
-        - message
-        - expiresInSeconds
+        - token
+        - userId
+        - email
+        - isAuthenticated
 
     OtpVerify:
       type: object
@@ -398,6 +410,9 @@ components:
           enum: [user, assistant]
         content:
           type: string
+        imageUrl:
+          type: string
+          nullable: true
         createdAt:
           type: string
           format: date-time
@@ -413,6 +428,12 @@ components:
         message:
           type: string
           minLength: 1
+        imageBase64:
+          type: string
+          nullable: true
+        mimeType:
+          type: string
+          nullable: true
       required:
         - message
 

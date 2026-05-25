@@ -24,8 +24,12 @@ export const RequestOtpBody = zod.object({
 })
 
 export const RequestOtpResponse = zod.object({
-  "message": zod.string(),
-  "expiresInSeconds": zod.number()
+  "token": zod.string(),
+  "userId": zod.string(),
+  "email": zod.string(),
+  "studentName": zod.string().nullish(),
+  "major": zod.string().nullish(),
+  "isAuthenticated": zod.boolean()
 })
 
 
@@ -80,6 +84,7 @@ export const GetChatHistoryResponseItem = zod.object({
   "id": zod.string(),
   "role": zod.enum(['user', 'assistant']),
   "content": zod.string(),
+  "imageUrl": zod.string().nullish(),
   "createdAt": zod.coerce.date()
 })
 export const GetChatHistoryResponse = zod.array(GetChatHistoryResponseItem)
@@ -92,13 +97,16 @@ export const GetChatHistoryResponse = zod.array(GetChatHistoryResponseItem)
 
 
 export const SendMessageBody = zod.object({
-  "message": zod.string().min(1)
+  "message": zod.string().min(1),
+  "imageBase64": zod.string().nullish(),
+  "mimeType": zod.string().nullish()
 })
 
 export const SendMessageResponse = zod.object({
   "id": zod.string(),
   "role": zod.enum(['user', 'assistant']),
   "content": zod.string(),
+  "imageUrl": zod.string().nullish(),
   "createdAt": zod.coerce.date()
 })
 

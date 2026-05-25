@@ -7,6 +7,10 @@
  */
 
 export interface OtpResponse {
-  message: string;
-  expiresInSeconds: number;
+  token: string;
+  userId: string;
+  email: string;
+  studentName?: string | null;
+  major?: string | null;
+  isAuthenticated: boolean;
 }
