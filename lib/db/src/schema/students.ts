@@ -1,4 +1,4 @@
-import { pgTable, text } from "drizzle-orm/pg-core";
+import { pgTable, text, real, integer } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
@@ -7,6 +7,10 @@ export const studentsTable = pgTable("students", {
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   major: text("major").notNull(),
+  gpa: real("gpa"),
+  completedHours: integer("completed_hours"),
+  level: integer("level"),
+  enrollmentYear: integer("enrollment_year"),
 });
 
 export const insertStudentSchema = createInsertSchema(studentsTable);

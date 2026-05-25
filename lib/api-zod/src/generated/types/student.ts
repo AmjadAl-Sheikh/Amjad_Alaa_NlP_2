@@ -11,5 +11,13 @@ export interface Student {
   name: string;
   email: string;
   major: string;
+  /** @nullable */
+  gpa?: number | null;
+  /** @nullable */
+  completedHours?: number | null;
+  /** @nullable */
+  level?: number | null;
+  /** @nullable */
+  enrollmentYear?: number | null;
   enrolledSubjects?: string[];
 }

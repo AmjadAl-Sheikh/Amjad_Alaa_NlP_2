@@ -13,5 +13,13 @@ export interface AuthSession {
   studentName?: string | null;
   /** @nullable */
   major?: string | null;
+  /** @nullable */
+  gpa?: number | null;
+  /** @nullable */
+  completedHours?: number | null;
+  /** @nullable */
+  level?: number | null;
+  /** @nullable */
+  token?: string | null;
   isAuthenticated: boolean;
 }

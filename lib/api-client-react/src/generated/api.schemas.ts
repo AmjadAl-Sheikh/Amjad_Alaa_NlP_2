@@ -23,12 +23,8 @@ export interface OtpRequest {
 }
 
 export interface OtpResponse {
-  token: string;
-  userId: string;
+  message: string;
   email: string;
-  studentName?: string | null;
-  major?: string | null;
-  isAuthenticated: boolean;
 }
 
 export interface OtpVerify {
@@ -43,6 +39,14 @@ export interface AuthSession {
   studentName?: string | null;
   /** @nullable */
   major?: string | null;
+  /** @nullable */
+  gpa?: number | null;
+  /** @nullable */
+  completedHours?: number | null;
+  /** @nullable */
+  level?: number | null;
+  /** @nullable */
+  token?: string | null;
   isAuthenticated: boolean;
 }
 
@@ -74,6 +78,14 @@ export interface Student {
   name: string;
   email: string;
   major: string;
+  /** @nullable */
+  gpa?: number | null;
+  /** @nullable */
+  completedHours?: number | null;
+  /** @nullable */
+  level?: number | null;
+  /** @nullable */
+  enrollmentYear?: number | null;
   enrolledSubjects?: string[];
 }
 

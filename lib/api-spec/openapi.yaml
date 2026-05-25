@@ -350,25 +350,13 @@ components:
     OtpResponse:
       type: object
       properties:
-        token:
-          type: string
-        userId:
+        message:
           type: string
         email:
           type: string
-        studentName:
-          type: string
-          nullable: true
-        major:
-          type: string
-          nullable: true
-        isAuthenticated:
-          type: boolean
       required:
-        - token
-        - userId
+        - message
         - email
-        - isAuthenticated
 
     OtpVerify:
       type: object
@@ -392,6 +380,14 @@ components:
         studentName:
           type: ["string", "null"]
         major:
+          type: ["string", "null"]
+        gpa:
+          type: ["number", "null"]
+        completedHours:
+          type: ["integer", "null"]
+        level:
+          type: ["integer", "null"]
+        token:
           type: ["string", "null"]
         isAuthenticated:
           type: boolean
@@ -448,6 +444,14 @@ components:
           type: string
         major:
           type: string
+        gpa:
+          type: ["number", "null"]
+        completedHours:
+          type: ["integer", "null"]
+        level:
+          type: ["integer", "null"]
+        enrollmentYear:
+          type: ["integer", "null"]
         enrolledSubjects:
           type: array
           items:

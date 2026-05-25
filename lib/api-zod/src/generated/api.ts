@@ -24,12 +24,8 @@ export const RequestOtpBody = zod.object({
 })
 
 export const RequestOtpResponse = zod.object({
-  "token": zod.string(),
-  "userId": zod.string(),
-  "email": zod.string(),
-  "studentName": zod.string().nullish(),
-  "major": zod.string().nullish(),
-  "isAuthenticated": zod.boolean()
+  "message": zod.string(),
+  "email": zod.string()
 })
 
 
@@ -46,6 +42,10 @@ export const VerifyOtpResponse = zod.object({
   "email": zod.string(),
   "studentName": zod.string().nullish(),
   "major": zod.string().nullish(),
+  "gpa": zod.number().nullish(),
+  "completedHours": zod.number().nullish(),
+  "level": zod.number().nullish(),
+  "token": zod.string().nullish(),
   "isAuthenticated": zod.boolean()
 })
 
@@ -67,6 +67,10 @@ export const GetMeResponse = zod.object({
   "email": zod.string(),
   "studentName": zod.string().nullish(),
   "major": zod.string().nullish(),
+  "gpa": zod.number().nullish(),
+  "completedHours": zod.number().nullish(),
+  "level": zod.number().nullish(),
+  "token": zod.string().nullish(),
   "isAuthenticated": zod.boolean()
 })
 
@@ -128,6 +132,10 @@ export const GetStudentProfileResponse = zod.object({
   "name": zod.string(),
   "email": zod.string(),
   "major": zod.string(),
+  "gpa": zod.number().nullish(),
+  "completedHours": zod.number().nullish(),
+  "level": zod.number().nullish(),
+  "enrollmentYear": zod.number().nullish(),
   "enrolledSubjects": zod.array(zod.string()).optional()
 })
 
