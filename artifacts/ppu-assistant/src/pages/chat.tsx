@@ -99,9 +99,23 @@ export default function Chat() {
     const reader = new FileReader();
     reader.onload = (ev) => {
       const dataUrl = ev.target?.result as string;
-      const [header, base64] = dataUrl.split(",");
-      const mimeType = header.match(/data:([^;]+)/)?.[1] ?? "image/jpeg";
-      setPendingImage({ base64, mimeType, previewUrl: dataUrl });
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const MAX = 1024;
+        let { width, height } = img;
+        if (width > MAX || height > MAX) {
+          if (width > height) { height = Math.round((height * MAX) / width); width = MAX; }
+          else { width = Math.round((width * MAX) / height); height = MAX; }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d")!.drawImage(img, 0, 0, width, height);
+        const compressed = canvas.toDataURL("image/jpeg", 0.75);
+        const [, base64] = compressed.split(",");
+        setPendingImage({ base64, mimeType: "image/jpeg", previewUrl: compressed });
+      };
+      img.src = dataUrl;
     };
     reader.readAsDataURL(file);
     e.target.value = "";

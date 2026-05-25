@@ -108,6 +108,7 @@ export function useSpeech(onTranscript?: (text: string) => void): UseSpeechRetur
 
     const voices = synthRef.current.getVoices();
     const arVoice =
+      voices.find(v => v.lang.startsWith("ar") && /female|woman|نسائي|fatima|hala|mia|leila|laila|amira|layan/i.test(v.name)) ||
       voices.find(v => v.name.toLowerCase().includes("google") && v.lang.startsWith("ar")) ||
       voices.find(v => v.lang === "ar-SA") ||
       voices.find(v => v.lang === "ar-EG") ||
@@ -118,8 +119,8 @@ export function useSpeech(onTranscript?: (text: string) => void): UseSpeechRetur
       if (idx >= chunks.length) { setState("idle"); return; }
       const utt = new SpeechSynthesisUtterance(chunks[idx++]);
       utt.lang = "ar";
-      utt.rate = 1.35;
-      utt.pitch = 0.9;
+      utt.rate = 1.25;
+      utt.pitch = 1.4;
       utt.volume = 1.0;
       if (arVoice) utt.voice = arVoice;
       utt.onend = speakChunk;
