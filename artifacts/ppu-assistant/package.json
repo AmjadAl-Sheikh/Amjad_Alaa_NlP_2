@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "homepage": "https://amjadal-sheikh.github.io/Amjad_Alaa_NlP_2/",
+  "homepage": "https://AmjadAl-Sheikh.github.io/Amjad_Alaa_NlP_2/",
   "scripts": {
     "dev": "vite --config vite.config.ts --host 0.0.0.0",
     "build": "vite build --config vite.config.ts",
