@@ -23,6 +23,24 @@ Steps to deploy frontend on Vercel:
    - Output Directory: `dist/public`
 3. Add any environment variable (optional): e.g., `VITE_API_BASE_URL` if you want the client to call a hosted backend.
 
+Frontend (GitHub Pages)
+- Repository: must be pushed to GitHub.
+- Branch: `main` for source, `gh-pages` for published site.
+- Root Directory: N/A (build output is `artifacts/ppu-assistant/dist/public`).
+- Install Command: `pnpm install`
+- Build Command: `pnpm run build`
+- Output Directory: `dist/public`
+- Pages Configuration: set GitHub Pages to publish from the `gh-pages` branch.
+
+Steps to deploy frontend on GitHub Pages:
+1. Push your repository to GitHub.
+2. Ensure `homepage` in `artifacts/ppu-assistant/package.json` is set to your GitHub Pages URL.
+3. Commit the repository changes.
+4. From `artifacts/ppu-assistant`, run:
+   - `pnpm install`
+   - `pnpm run deploy`
+5. In GitHub repository settings, choose Pages source: `gh-pages` branch, root.
+
 Backend (Node host - Railway/Render)
 - Working Directory: `artifacts/api-server`
 - Install Command: `pnpm install`
